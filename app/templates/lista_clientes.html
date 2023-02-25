@@ -1,0 +1,58 @@
+{% extends 'base.html' %}
+
+{% load meus_filtros %}
+{% load humanize %}
+
+{% block 'conteudo' %}
+<div class="container">    
+    <div class="row">
+
+    {# comentario #}
+    {% comment %}
+    varias
+    linhas
+    de
+    comentarios
+    {% endcomment %}
+    {% for cliente in object_list %}
+    <div class="col-auto">
+    {% with "Programador Professora" as list %}
+    {% if cliente.profissao in list %}
+        {% ifchanged cliente.profissao %}{# remove os duplicados #}
+        <div class="panel panel-primary">
+          <div class="panel-heading">{{ cliente.id|ordinal }} - {{cliente.nome}}</div>
+            {% if cliente.profissao == "Programador" %}
+          <div class="panel-body">{{ cliente.profissao }} - {{cliente.data_nascimento}}</div>
+                {% elif cliente.profissao == "Professora" %}
+                <div class="panel-body"><h4>{{ cliente.profissao }} - {{ "4500000"|intword }} - {{cliente.data_nascimento}}</h4></div>
+            {% else %}
+                <div class="panel-body">{{cliente.data_nascimento}}</div>
+          <div class="panel-footer">    
+            <a href={% url "lista_cliente" pk=cliente.id %}>Listar</a>             
+            <a href={% url "editar_cliente" pk=cliente.id %}>Editar</a>
+            <a href={% url "remover_cliente" pk=cliente.id %}>Remover</a>
+          </div>
+
+                {% endif %}
+        </div>
+        {% endifchanged %}
+        {% endif %}
+    {% endwith %}
+      </div>
+        {% empty %}
+        <h3>Não há clientes cadastrados</h3>
+    {% endfor %}
+    </div>
+  </div>
+
+  <a href="{% url "cadastrar_cliente" %}" class="btn btn-primary">Cadastrar cliente</a>
+
+  <br>
+    {{ 3|add:"5" }} {# filtro incremento #}
+    <br>
+    {{ "admin@admin.com"|capfirst }} {# deixa a primeira letra maiuscula #}
+    <br>
+    {{ "ITALO"|cut:"I" }}{# remover igual replace #}
+    <br>
+    {{ "RAMON"|remover_caracter:"O" }}{# filtro personalizado #}
+{% endblock 'conteudo' %}
